@@ -106,6 +106,48 @@ jobs:
         run: vendor/bin/phpunit --testsuite "part${{ matrix.part }}"
 ```
 
+## Comparison with Paratest
+
+[Paratest](https://github.com/paratestphp/paratest) and PHPUnit Parallel Job Balancer solve different problems and can be used together.
+
+| Feature | PHPUnit Parallel Job Balancer | Paratest |
+|---------|------------------------------|----------|
+| **Purpose** | Distributes tests across CI jobs | Runs tests in parallel processes |
+| **Parallelization** | Across machines/containers | Within a single machine |
+| **Timing-based balancing** | Yes, uses historical JUnit XML data | Limited (WrapperRunner only) |
+| **CI integration** | Native (GitLab CI, GitHub Actions, etc.) | Requires single machine |
+| **Test isolation** | Full (separate CI jobs) | Process-level |
+| **Scalability** | Scales with CI runners | Limited by CPU cores |
+| **Output** | PHPUnit XML configuration | Direct test execution |
+
+### When to use PHPUnit Parallel Job Balancer
+
+- You have multiple CI runners/containers available
+- You want to distribute tests evenly based on actual execution times
+- You need full isolation between test groups
+- Your CI system supports parallel jobs (GitLab CI, GitHub Actions matrix, etc.)
+
+### When to use Paratest
+
+- You want to parallelize tests on a single machine
+- You don't have multiple CI runners available
+- You need quick local parallel execution
+
+### Using both together
+
+You can combine both tools for maximum parallelization:
+
+```yaml
+# GitLab CI example: 4 parallel jobs, each using Paratest with 4 processes
+test:
+  parallel: 4
+  script:
+    - vendor/bin/balance-phpunit-jobs -j 4 -o phpunit-balanced.xml previous-run/*.xml
+    - vendor/bin/paratest -p 4 --testsuite "part${CI_NODE_INDEX}"
+```
+
+This gives you 4 CI jobs × 4 parallel processes = 16-way parallelization.
+
 ## Requirements
 
 - PHP 8.1 or higher
