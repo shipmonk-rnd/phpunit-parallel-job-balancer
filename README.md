@@ -117,20 +117,34 @@ jobs:
 | **Timing-based balancing** | Yes, uses historical JUnit XML data | Limited (WrapperRunner only) |
 | **CI integration** | Native (GitLab CI, GitHub Actions, etc.) | Requires single machine |
 | **Test isolation** | Full (separate CI jobs) | Process-level |
+| **Race conditions** | None (complete isolation) | Possible (shared resources) |
+| **Adoption effort** | Minimal (no test changes needed) | Often significant |
 | **Scalability** | Scales with CI runners | Limited by CPU cores |
 | **Output** | PHPUnit XML configuration | Direct test execution |
+
+### Why PHPUnit Parallel Job Balancer is easier to adopt
+
+A common challenge with Paratest is that integration tests often need to be adjusted to be compatible with parallel execution. Tests that share resources (databases, files, caches, external services) can interfere with each other when running simultaneously, causing:
+
+- **Race conditions** - Tests may randomly fail due to timing issues, and these bugs are notoriously hard to debug
+- **Shared state conflicts** - Database records, file locks, or cache entries created by one test may affect another
+- **Complex test refactoring** - Adapting an existing codebase with many integration tests can be very time-consuming
+
+**PHPUnit Parallel Job Balancer avoids these issues entirely** because each CI job runs in complete isolation (separate container/machine). Your tests don't need any modifications - they run exactly as they would in a sequential PHPUnit execution, just distributed across multiple runners.
 
 ### When to use PHPUnit Parallel Job Balancer
 
 - You have multiple CI runners/containers available
 - You want to distribute tests evenly based on actual execution times
-- You need full isolation between test groups
+- You need full isolation between test groups (no race conditions)
+- You want to parallelize without modifying existing tests
 - Your CI system supports parallel jobs (GitLab CI, GitHub Actions matrix, etc.)
 
 ### When to use Paratest
 
 - You want to parallelize tests on a single machine
 - You don't have multiple CI runners available
+- Your tests are already designed to run in parallel (no shared state)
 - You need quick local parallel execution
 
 ### Using both together
