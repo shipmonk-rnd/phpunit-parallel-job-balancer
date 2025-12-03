@@ -6,10 +6,6 @@ use PHPUnit\Framework\TestCase;
 use ShipMonk\PHPUnitParallelJobBalancer\BalancePhpunitJobsCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use function file_get_contents;
-use function sys_get_temp_dir;
-use function uniqid;
-use function unlink;
 
 class BalancePhpunitJobsCommandTest extends TestCase
 {
@@ -64,31 +60,6 @@ class BalancePhpunitJobsCommandTest extends TestCase
         ]);
 
         self::assertSame(0, $this->commandTester->getStatusCode());
-    }
-
-    public function testExecuteWithOutputFile(): void
-    {
-        $tempFile = sys_get_temp_dir() . '/test-output-' . uniqid() . '.xml';
-
-        try {
-            $this->commandTester->execute([
-                'junit-files' => [__DIR__ . '/data/part1.xml'],
-                '--jobs' => '2',
-                '--output' => $tempFile,
-            ]);
-
-            $output = $this->commandTester->getDisplay();
-
-            self::assertSame(0, $this->commandTester->getStatusCode());
-            self::assertStringContainsString("Output written to: {$tempFile}", $output);
-            self::assertFileExists($tempFile);
-
-            $fileContent = file_get_contents($tempFile);
-            self::assertNotFalse($fileContent);
-            self::assertStringContainsString('<testsuite name="part1">', $fileContent);
-        } finally {
-            @unlink($tempFile);
-        }
     }
 
     public function testExecuteWithCustomTestsDir(): void

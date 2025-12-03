@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function file_put_contents;
 use function sprintf;
 
 final class BalancePhpunitJobsCommand extends Command
@@ -43,12 +42,6 @@ final class BalancePhpunitJobsCommand extends Command
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Paths to exclude from output',
                 [],
-            )
-            ->addOption(
-                'output',
-                'o',
-                InputOption::VALUE_REQUIRED,
-                'Output file (default: stdout)',
             )
             ->addOption(
                 'tests-dir',
@@ -86,9 +79,6 @@ final class BalancePhpunitJobsCommand extends Command
         /** @var list<string> $excludePaths */
         $excludePaths = $input->getOption('exclude');
 
-        /** @var string|null $outputFile */
-        $outputFile = $input->getOption('output');
-
         /** @var string $testsDir */
         $testsDir = $input->getOption('tests-dir');
 
@@ -102,12 +92,7 @@ final class BalancePhpunitJobsCommand extends Command
             return Command::FAILURE;
         }
 
-        if ($outputFile !== null) {
-            file_put_contents($outputFile, $xmlOutput);
-            $output->writeln("<info>Output written to: {$outputFile}</info>");
-        } else {
-            $output->write($xmlOutput);
-        }
+        $output->write($xmlOutput);
 
         return Command::SUCCESS;
     }
