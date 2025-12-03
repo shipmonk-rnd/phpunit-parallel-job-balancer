@@ -1,0 +1,36 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    level: max
+    phpVersion:
+        min: 80100
+        max: 80499
+    paths:
+        - bin/balance-phpunit-jobs
+        - src
+        - tests
+    excludePaths:
+        analyseAndScan:
+            - tests/data/*
+    tmpDir: cache/phpstan/
+    reportAnyTypeWideningInVarTag: true
+    checkMissingCallableSignature: true
+    checkUninitializedProperties: true
+    checkBenevolentUnionTypes: true
+    checkImplicitMixed: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        implicitThrows: false
+        checkedExceptionClasses:
+            - ShipMonk\PHPUnitParallelJobBalancer\Exception\RuntimeException
+    ignoreErrors:
+        -
+            message: "#but it's missing from the PHPDoc @throws tag\\.$#"
+            path: tests/*

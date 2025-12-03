@@ -1,0 +1,7 @@
+/vendor
+/cache/*
+!/cache/.gitkeep
+/.idea
+/.vscode
+/phpstan.neon
+/composer.phar

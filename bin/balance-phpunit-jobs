@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php declare(strict_types = 1);
+
+use ShipMonk\PHPUnitParallelJobBalancer\BalancePhpunitJobsCommand;
+use Symfony\Component\Console\Application;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 'stderr');
+
+// Autoload - check multiple locations
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php', // When installed as a project
+    __DIR__ . '/../../../autoload.php', // When installed as a dependency
+];
+
+$autoloaderFound = false;
+
+foreach ($autoloadPaths as $autoloadPath) {
+    if (file_exists($autoloadPath)) {
+        require $autoloadPath;
+        $autoloaderFound = true;
+        break;
+    }
+}
+
+if (!$autoloaderFound) {
+    fwrite(STDERR, "Could not find autoloader. Run 'composer install' first.\n");
+    exit(1);
+}
+
+$application = new Application('PHPUnit Parallel Job Balancer', '1.0.0');
+$application->addCommand(new BalancePhpunitJobsCommand());
+$application->setDefaultCommand('balance-phpunit-jobs', isSingleCommand: true);
+$application->run();
