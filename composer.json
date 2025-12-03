@@ -1,0 +1,78 @@
+{
+    "name": "shipmonk/phpunit-parallel-job-balancer",
+    "description": "Balances PHPUnit test execution across parallel jobs based on JUnit XML timing data",
+    "license": [
+        "MIT"
+    ],
+    "type": "library",
+    "keywords": [
+        "phpunit",
+        "parallel",
+        "testing",
+        "ci",
+        "job-balancer",
+        "test-distribution",
+        "junit",
+        "xml"
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-dom": "*",
+        "ext-simplexml": "*",
+        "symfony/console": "^6.0 || ^7.0 || ^8.0"
+    },
+    "require-dev": {
+        "editorconfig-checker/editorconfig-checker": "^10.6.0",
+        "ergebnis/composer-normalize": "^2.44.0",
+        "phpstan/phpstan": "^2.1.0",
+        "phpstan/phpstan-phpunit": "^2.0.0",
+        "phpstan/phpstan-strict-rules": "^2.0.0",
+        "phpunit/phpunit": "^10.5.0 || ^11.0.0 || ^12.0.0",
+        "shipmonk/coding-standard": "^0.2.0",
+        "shipmonk/composer-dependency-analyser": "^1.8.0",
+        "shipmonk/name-collision-detector": "^2.1.0",
+        "shipmonk/phpstan-rules": "^4.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShipMonk\\PHPUnitParallelJobBalancer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipMonkTests\\PHPUnitParallelJobBalancer\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/balance-phpunit-jobs"
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "check": [
+            "@check:composer",
+            "@check:ec",
+            "@check:cs",
+            "@check:types",
+            "@check:tests",
+            "@check:collisions",
+            "@check:dependencies"
+        ],
+        "check:collisions": "detect-collisions src tests",
+        "check:composer": [
+            "composer normalize --dry-run --no-check-lock --no-update-lock",
+            "composer validate --strict"
+        ],
+        "check:cs": "phpcs",
+        "check:dependencies": "composer-dependency-analyser",
+        "check:ec": "ec src tests",
+        "check:tests": "phpunit tests",
+        "check:types": "phpstan analyse -vv --ansi",
+        "fix:cs": "phpcbf"
+    }
+}

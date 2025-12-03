@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php declare(strict_types = 1);
+
+use ShipMonk\PHPUnitParallelJobBalancer\BalancePhpunitJobsCommand;
+use Symfony\Component\Console\Application;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 'stderr');
+
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloadFound = false;
+
+foreach ($autoloadPaths as $autoloadPath) {
+    if (is_file($autoloadPath)) {
+        require $autoloadPath;
+        $autoloadFound = true;
+        break;
+    }
+}
+
+if (!$autoloadFound) {
+    fwrite(STDERR, "Composer autoload not found. Please run 'composer install'.\n");
+    exit(1);
+}
+
+$application = new Application('PHPUnit Parallel Job Balancer');
+$application->addCommands([new BalancePhpunitJobsCommand()]);
+$application->setDefaultCommand('balance-phpunit-jobs', isSingleCommand: true);
+$application->run();
