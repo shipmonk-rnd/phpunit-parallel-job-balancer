@@ -2,7 +2,6 @@
 
 namespace ShipMonk\PHPUnitParallelJobBalancer;
 
-use ShipMonk\PHPUnitParallelJobBalancer\Exception\InvalidPathException;
 use ShipMonk\PHPUnitParallelJobBalancer\Exception\RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -98,7 +97,7 @@ final class BalancePhpunitJobsCommand extends Command
 
         try {
             $xmlOutput = $this->runBalancing($junitFiles, $jobCount, $excludePaths, $testsDir, $testsuitePrefix, $output);
-        } catch (InvalidPathException | RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
             return Command::FAILURE;
         }
@@ -118,7 +117,6 @@ final class BalancePhpunitJobsCommand extends Command
      * @param positive-int $jobCount
      * @param list<string> $excludePaths
      *
-     * @throws InvalidPathException
      * @throws RuntimeException
      */
     private function runBalancing(

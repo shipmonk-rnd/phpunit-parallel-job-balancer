@@ -3,12 +3,13 @@ includes:
     - ./vendor/phpstan/phpstan-strict-rules/rules.neon
     - ./vendor/phpstan/phpstan-phpunit/extension.neon
     - ./vendor/phpstan/phpstan-phpunit/rules.neon
+    - ./vendor/shipmonk/phpstan-rules/rules.neon
 
 parameters:
     level: max
     phpVersion:
         min: 80100
-        max: 80499
+        max: 80599
     paths:
         - bin/balance-phpunit-jobs
         - src

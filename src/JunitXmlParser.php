@@ -19,8 +19,7 @@ final class JunitXmlParser
      * @param list<string> $junitFilePaths
      * @return array<string, float> Map of relative file path to total time
      *
-     * @throws InvalidPathException When file does not exist or is not readable
-     * @throws RuntimeException When XML parsing fails
+     * @throws RuntimeException When file does not exist or XML parsing fails
      */
     public function parse(
         array $junitFilePaths,
