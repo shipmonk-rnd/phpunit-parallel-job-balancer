@@ -12,14 +12,22 @@ $autoloadPaths = [
     __DIR__ . '/../../../autoload.php',
 ];
 
+$autoloadFound = false;
+
 foreach ($autoloadPaths as $autoloadPath) {
     if (is_file($autoloadPath)) {
         require $autoloadPath;
+        $autoloadFound = true;
         break;
     }
 }
 
-$application = new Application('PHPUnit Parallel Job Balancer', '1.0.0');
+if (!$autoloadFound) {
+    fwrite(STDERR, "Composer autoload not found. Please run 'composer install'.\n");
+    exit(1);
+}
+
+$application = new Application('PHPUnit Parallel Job Balancer');
 $application->addCommand(new BalancePhpunitJobsCommand());
 $application->setDefaultCommand('balance-phpunit-jobs', isSingleCommand: true);
 $application->run();
