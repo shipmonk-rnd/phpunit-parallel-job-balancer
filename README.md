@@ -28,7 +28,7 @@ This will output PHPUnit testsuite XML fragments to stdout.
 | `--exclude=PATH` | `-e` | Exclude path from output (repeatable) | - |
 | `--output=FILE` | `-o` | Write output to file instead of stdout | stdout |
 | `--tests-dir=PATH` | - | Base test directory | `./tests` |
-| `--testsuite-name=PREFIX` | - | Testsuite name prefix (generates part1, part2, ...) | `part` |
+| `--test-suite-prefix=PREFIX` | - | Test suite name prefix (generates part1, part2, ...) | `part` |
 | `--help` | `-h` | Show help message | - |
 
 ### Examples
@@ -47,8 +47,8 @@ vendor/bin/balance-phpunit-jobs \
 # Output to file
 vendor/bin/balance-phpunit-jobs -j 4 -o phpunit-suites.xml junit/*.xml
 
-# Custom testsuite name prefix
-vendor/bin/balance-phpunit-jobs -j 4 --testsuite-name=job junit/*.xml
+# Custom test suite prefix
+vendor/bin/balance-phpunit-jobs -j 4 --test-suite-prefix=job junit/*.xml
 # Generates: job1, job2, job3, job4
 ```
 

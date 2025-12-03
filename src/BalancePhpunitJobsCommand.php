@@ -59,10 +59,10 @@ final class BalancePhpunitJobsCommand extends Command
                 self::DEFAULT_TESTS_DIR,
             )
             ->addOption(
-                'testsuite-name',
+                'test-suite-prefix',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Testsuite name prefix (e.g. "part" generates part1, part2, ...)',
+                'Test suite name prefix (e.g. "part" generates part1, part2, ...)',
                 self::DEFAULT_TESTSUITE_PREFIX,
             );
     }
@@ -94,7 +94,7 @@ final class BalancePhpunitJobsCommand extends Command
         $testsDir = $input->getOption('tests-dir');
 
         /** @var string $testsuitePrefix */
-        $testsuitePrefix = $input->getOption('testsuite-name');
+        $testsuitePrefix = $input->getOption('test-suite-prefix');
 
         try {
             $xmlOutput = $this->runBalancing($junitFiles, $jobCount, $excludePaths, $testsDir, $testsuitePrefix, $output);
