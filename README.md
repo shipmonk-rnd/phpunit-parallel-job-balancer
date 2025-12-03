@@ -15,7 +15,8 @@ composer require --dev shipmonk/phpunit-parallel-job-balancer
 ### Basic Usage
 
 ```sh
-vendor/bin/balance-phpunit-jobs junit-reports/*.xml
+vendor/bin/phpunit --log-junit junit.xml
+vendor/bin/balance-phpunit-jobs junit.xml
 ```
 
 This will output PHPUnit testsuite XML fragments to stdout.
