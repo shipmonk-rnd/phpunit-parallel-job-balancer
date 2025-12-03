@@ -28,6 +28,6 @@ if (!$autoloadFound) {
 }
 
 $application = new Application('PHPUnit Parallel Job Balancer');
-$application->addCommand(new BalancePhpunitJobsCommand());
+$application->addCommands([new BalancePhpunitJobsCommand()]);
 $application->setDefaultCommand('balance-phpunit-jobs', isSingleCommand: true);
 $application->run();

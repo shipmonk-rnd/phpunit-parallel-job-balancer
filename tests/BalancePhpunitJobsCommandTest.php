@@ -19,7 +19,7 @@ class BalancePhpunitJobsCommandTest extends TestCase
     protected function setUp(): void
     {
         $application = new Application();
-        $application->addCommand(new BalancePhpunitJobsCommand());
+        $application->addCommands([new BalancePhpunitJobsCommand()]);
 
         $command = $application->find('balance-phpunit-jobs');
         $this->commandTester = new CommandTester($command);
