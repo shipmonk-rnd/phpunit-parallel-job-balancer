@@ -15,9 +15,11 @@ use function sprintf;
 final class BalancePhpunitJobsCommand extends Command
 {
 
-    private const DEFAULT_JOBS = 16;
+    private const DEFAULT_JOBS = 4;
 
     private const DEFAULT_TESTS_DIR = './tests';
+
+    private const DEFAULT_TESTSUITE_PREFIX = 'part';
 
     protected function configure(): void
     {
@@ -55,6 +57,13 @@ final class BalancePhpunitJobsCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Base test directory',
                 self::DEFAULT_TESTS_DIR,
+            )
+            ->addOption(
+                'testsuite-name',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Testsuite name prefix (e.g. "part" generates part1, part2, ...)',
+                self::DEFAULT_TESTSUITE_PREFIX,
             );
     }
 
@@ -84,8 +93,11 @@ final class BalancePhpunitJobsCommand extends Command
         /** @var string $testsDir */
         $testsDir = $input->getOption('tests-dir');
 
+        /** @var string $testsuitePrefix */
+        $testsuitePrefix = $input->getOption('testsuite-name');
+
         try {
-            $xmlOutput = $this->runBalancing($junitFiles, $jobCount, $excludePaths, $testsDir, $output);
+            $xmlOutput = $this->runBalancing($junitFiles, $jobCount, $excludePaths, $testsDir, $testsuitePrefix, $output);
         } catch (InvalidPathException | RuntimeException $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
             return Command::FAILURE;
@@ -114,6 +126,7 @@ final class BalancePhpunitJobsCommand extends Command
         int $jobCount,
         array $excludePaths,
         string $testsDir,
+        string $testsuitePrefix,
         OutputInterface $output,
     ): string
     {
@@ -131,7 +144,7 @@ final class BalancePhpunitJobsCommand extends Command
         $output->writeln('');
 
         $generator = new PhpunitXmlGenerator();
-        return $generator->generate($result, $excludePaths);
+        return $generator->generate($result, $excludePaths, $testsuitePrefix);
     }
 
 }

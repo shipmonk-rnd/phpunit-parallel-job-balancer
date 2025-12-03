@@ -24,12 +24,12 @@ This will output PHPUnit testsuite XML fragments to stdout.
 
 | Option | Short | Description | Default |
 |--------|-------|-------------|---------|
-| `--jobs=N` | `-j` | Number of parallel jobs | 16 |
+| `--jobs=N` | `-j` | Number of parallel jobs | 4 |
 | `--exclude=PATH` | `-e` | Exclude path from output (repeatable) | - |
 | `--output=FILE` | `-o` | Write output to file instead of stdout | stdout |
 | `--tests-dir=PATH` | - | Base test directory | `./tests` |
+| `--testsuite-name=PREFIX` | - | Testsuite name prefix (generates part1, part2, ...) | `part` |
 | `--help` | `-h` | Show help message | - |
-| `--version` | `-V` | Show version | - |
 
 ### Examples
 
@@ -39,13 +39,17 @@ vendor/bin/balance-phpunit-jobs -j 8 junit/*.xml
 
 # With exclusions
 vendor/bin/balance-phpunit-jobs \
-  --jobs=16 \
+  --jobs=4 \
   --exclude=./tests/Integration/Slow \
   --exclude=./tests/E2E \
   junit/*.xml
 
 # Output to file
-vendor/bin/balance-phpunit-jobs -j 16 -o phpunit-suites.xml junit/*.xml
+vendor/bin/balance-phpunit-jobs -j 4 -o phpunit-suites.xml junit/*.xml
+
+# Custom testsuite name prefix
+vendor/bin/balance-phpunit-jobs -j 4 --testsuite-name=job junit/*.xml
+# Generates: job1, job2, job3, job4
 ```
 
 ### Example Output
@@ -81,10 +85,10 @@ vendor/bin/balance-phpunit-jobs -j 16 -o phpunit-suites.xml junit/*.xml
 
 ```yaml
 test:
-  parallel: 16
+  parallel: 4
   script:
-    - vendor/bin/balance-phpunit-jobs -j 16 -o phpunit-balanced.xml previous-run/*.xml
-    - vendor/bin/phpunit --testsuite "part${CI_NODE_INDEX}"
+    - vendor/bin/balance-phpunit-jobs -j 4 -o phpunit-balanced.xml previous-run/*.xml
+    - vendor/bin/phpunit --testsuite "part${CI_NODE_INDEX}" --log-junit junit.xml
   artifacts:
     reports:
       junit: junit.xml
@@ -170,7 +174,9 @@ This gives you 4 CI jobs × 4 parallel processes = 16-way parallelization.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Check your code by `composer check`
+- Autofix coding-style by `composer fix:cs`
+- All functionality must be tested
 
 ## License
 

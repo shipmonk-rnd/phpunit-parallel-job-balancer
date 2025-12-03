@@ -24,9 +24,10 @@ final class PhpunitXmlGenerator
     public function generate(
         BalancingResult $result,
         array $excludedPaths,
+        string $testsuitePrefix = 'part',
     ): string
     {
-        $xmlFragment = $this->createXmlFragment($result->jobs, $excludedPaths);
+        $xmlFragment = $this->createXmlFragment($result->jobs, $excludedPaths, $testsuitePrefix);
         return $this->serializeXml($xmlFragment);
     }
 
@@ -39,6 +40,7 @@ final class PhpunitXmlGenerator
     private function createXmlFragment(
         array $jobs,
         array $excludedPaths,
+        string $testsuitePrefix,
     ): DOMDocumentFragment
     {
         $indent = '    ';
@@ -49,7 +51,7 @@ final class PhpunitXmlGenerator
 
         foreach ($jobs as $bucketIndex => $nodes) {
             $testSuite = $this->createElement($xmlDocument, 'testsuite');
-            $testSuite->setAttribute('name', 'part' . ($bucketIndex + 1));
+            $testSuite->setAttribute('name', $testsuitePrefix . ($bucketIndex + 1));
 
             $directories = array_filter($nodes, static function (BalanceTestJobNode $node): bool {
                 return !str_ends_with($node->getPath(), '.php');
