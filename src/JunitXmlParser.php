@@ -3,7 +3,9 @@
 namespace ShipMonk\PHPUnitParallelJobBalancer;
 
 use ShipMonk\PHPUnitParallelJobBalancer\Exception\InvalidPathException;
+use ShipMonk\PHPUnitParallelJobBalancer\Exception\InvalidXmlStructureException;
 use ShipMonk\PHPUnitParallelJobBalancer\Exception\RuntimeException;
+use ShipMonk\PHPUnitParallelJobBalancer\Exception\XmlParseException;
 use SimpleXMLElement;
 use function dirname;
 use function file_exists;
@@ -54,7 +56,8 @@ final class JunitXmlParser
      * @param array<string, float> $timings
      * @return array<string, float>
      *
-     * @throws RuntimeException
+     * @throws XmlParseException
+     * @throws InvalidXmlStructureException
      */
     private function parseFile(
         string $path,
@@ -65,7 +68,7 @@ final class JunitXmlParser
         $xml = @simplexml_load_file($path);
 
         if ($xml === false) {
-            throw new RuntimeException("Failed to parse XML from: {$path}");
+            throw new XmlParseException("Failed to parse XML from: {$path}");
         }
 
         $projectDir = $this->extractProjectDir($xml, $path);
@@ -85,7 +88,7 @@ final class JunitXmlParser
     }
 
     /**
-     * @throws RuntimeException
+     * @throws InvalidXmlStructureException
      */
     private function extractProjectDir(
         SimpleXMLElement $xml,
@@ -93,13 +96,13 @@ final class JunitXmlParser
     ): string
     {
         if (!isset($xml->testsuite[0])) {
-            throw new RuntimeException("No testsuite element found in: {$path}");
+            throw new InvalidXmlStructureException("No testsuite element found in: {$path}");
         }
 
         $name = (string) $xml->testsuite[0]['name'];
 
         if ($name === '') {
-            throw new RuntimeException("Testsuite name attribute is empty in: {$path}");
+            throw new InvalidXmlStructureException("Testsuite name attribute is empty in: {$path}");
         }
 
         return dirname($name);

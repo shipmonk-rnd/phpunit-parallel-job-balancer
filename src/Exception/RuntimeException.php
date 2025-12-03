@@ -4,7 +4,7 @@ namespace ShipMonk\PHPUnitParallelJobBalancer\Exception;
 
 use RuntimeException as BaseRuntimeException;
 
-class RuntimeException extends BaseRuntimeException
+abstract class RuntimeException extends BaseRuntimeException
 {
 
 }

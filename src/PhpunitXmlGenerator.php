@@ -5,7 +5,7 @@ namespace ShipMonk\PHPUnitParallelJobBalancer;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMElement;
-use ShipMonk\PHPUnitParallelJobBalancer\Exception\RuntimeException;
+use ShipMonk\PHPUnitParallelJobBalancer\Exception\XmlGenerationException;
 use function array_filter;
 use function sort;
 use function sprintf;
@@ -19,7 +19,7 @@ final class PhpunitXmlGenerator
     /**
      * @param list<string> $excludedPaths
      *
-     * @throws RuntimeException
+     * @throws XmlGenerationException
      */
     public function generate(
         BalancingResult $result,
@@ -35,7 +35,7 @@ final class PhpunitXmlGenerator
      * @param array<int, list<BalanceTestJobNode>> $jobs
      * @param list<string> $excludedPaths
      *
-     * @throws RuntimeException
+     * @throws XmlGenerationException
      */
     private function createXmlFragment(
         array $jobs,
@@ -102,7 +102,7 @@ final class PhpunitXmlGenerator
     }
 
     /**
-     * @throws RuntimeException
+     * @throws XmlGenerationException
      */
     private function createElement(
         DOMDocument $document,
@@ -113,7 +113,7 @@ final class PhpunitXmlGenerator
         $element = $document->createElement($tagName, $value);
 
         if ($element === false) {
-            throw new RuntimeException("Failed to create element: {$tagName}");
+            throw new XmlGenerationException("Failed to create element: {$tagName}");
         }
 
         return $element;
@@ -146,20 +146,20 @@ final class PhpunitXmlGenerator
     }
 
     /**
-     * @throws RuntimeException
+     * @throws XmlGenerationException
      */
     private function serializeXml(DOMDocumentFragment $xmlFragment): string
     {
         $xmlDocument = $xmlFragment->ownerDocument;
 
         if ($xmlDocument === null) {
-            throw new RuntimeException('XML fragment has no owner document');
+            throw new XmlGenerationException('XML fragment has no owner document');
         }
 
         $xmlString = $xmlDocument->saveXML($xmlFragment);
 
         if ($xmlString === false) {
-            throw new RuntimeException('Failed to serialize XML');
+            throw new XmlGenerationException('Failed to serialize XML');
         }
 
         return $xmlString;
