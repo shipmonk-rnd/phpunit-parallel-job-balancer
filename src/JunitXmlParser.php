@@ -56,8 +56,8 @@ final class JunitXmlParser
      * @param array<string, float> $timings
      * @return array<string, float>
      *
-     * @throws XmlParseException
      * @throws InvalidXmlStructureException
+     * @throws XmlParseException
      */
     private function parseFile(
         string $path,
